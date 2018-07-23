@@ -1,6 +1,5 @@
 #pragma once
 #include <cassert>
-#include "matrix2D.h"
 #include "dyarray.h"
 
 template <typename T,int N>
@@ -13,18 +12,21 @@ private:
 	int column;
 	PriLib::dyarray<T> data;
 public:
-	Matrix() :column(3), data(3) {}
-	Matrix(int c) :column(c), data(c) {}
-	const T& at(int n) const
+	Matrix(int c) : column(c), data(c) {}
+	T& at(int n)
 	{
-		assert(n < column);
+		assert(n < column && -1 < n);
 		return data[n];
 	}
-	~Matrix() {}
+	const T& at(int n) const
+	{
+		assert(n < column && -1 < n);
+		return data[n];
+	}
+	int getcolumn() { return column; }
 };
 
 template <typename T>
-//using Matrix<T, 2> = Matrix2D<T>
 class Matrix<T, 2>
 {
 private:
@@ -32,14 +34,19 @@ private:
 	int column;
 	PriLib::dyarray<T> data;
 public:
-	Matrix() :row(3), column(3), data(3 * 3) {}
-	Matrix(int r, int c) :row(r), column(c), data(r * c) {}
-	const T& at(int x, int y) const
+	Matrix(int r, int c) : row(r), column(c), data(r * c) {}
+	T& at(int x, int y)
 	{
-		assert(x < row && y < column);
+		assert(x < row && -1 < x && y < column && -1 < y);
 		return data[x*column + y];
 	}
-	~Matrix() {}
+	const T& at(int x, int y) const
+	{
+		assert(x < row && -1 < x && y < column && -1 < y);
+		return data[x*column + y];
+	}
+	int getrow() { return row; }
+	int getcolumn() { return column; }
 };
 
 template <typename T>
@@ -51,12 +58,18 @@ private:
 	int column;
 	PriLib::dyarray<T> data;
 public:
-	Matrix() :no(2), row(2), column(2), data(2 * 2 * 2){}
-	Matrix(int n, int r, int c) :no(n), row(r), column(c), data(n * r * c) {}
+	Matrix(int n, int r, int c) : no(n), row(r), column(c), data(n * r * c) {}
+	T& at(int x, int y, int z)
+	{
+		assert(x < no && -1 < x && y < row && -1 < y && z < column && -1 < z);
+		return data[x*(row * column) + y * column + z];
+	}
 	const T& at(int x, int y, int z) const
 	{
-		assert(x < no && y < row && z < column);
+		assert(x < no && -1 < x && y < row && -1 < y && z < column && -1 < z);
 		return data[x*(row * column) + y*column + z];
 	}
-	~Matrix() {}
+	int getno(){ return no; }
+	int getrow(){ return row; }
+	int getcolumn(){ return column; }
 };
